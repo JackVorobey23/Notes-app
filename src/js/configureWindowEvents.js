@@ -1,5 +1,11 @@
 import { DOMHelper, popups } from "./DOMHelper.js";
 import DateHelper from "./DateHelper.js";
+import { NoteService } from "./NoteService.js";
+
+/**
+ * @param {NoteService} noteService 
+ * @param {DOMHelper} domHelper
+ */
 
 export default function configureWindowEvents(noteService, domHelper) {
 
@@ -32,15 +38,14 @@ export default function configureWindowEvents(noteService, domHelper) {
     }
 
     window.unarchive = (trElement) => {
-        console.log(trElement);
-        console.log(trElement.parentElement);
-        console.log(trElement.parentElement.id);
+
         const unarchiveNoteId = trElement.parentElement.id;
 
         noteService.unarchiveNote(unarchiveNoteId);
+
         domHelper.removeArchivedNoteElementById(unarchiveNoteId);
 
-        domHelper.updateNoteStatistics(noteService.notes, noteService.archivedNotes);
+        domHelper.updateNoteStatistics(noteService);
         domHelper.addNote(noteService.getNoteById(unarchiveNoteId));
     }
 
@@ -80,7 +85,7 @@ export default function configureWindowEvents(noteService, domHelper) {
             domHelper.removeNoteElementById(noteIdToArchive);
 
             window.localStorage.setItem('archiveNoteId', '');
-            domHelper.updateNoteStatistics(noteService.notes, noteService.archivedNotes)
+            domHelper.updateNoteStatistics(noteService)
         }
         else {
             console.log(archiveResult.errorMsg);
@@ -97,26 +102,51 @@ export default function configureWindowEvents(noteService, domHelper) {
             return;
         }
         window.localStorage.setItem('editNoteId', '');
-        
+
         domHelper.updateNote(noteService.getNoteById(newNote.id));
-        
+
         domHelper.closePopup(popups.popupEdit);
-        
-        domHelper.updateNoteStatistics(noteService.notes, noteService.archivedNotes);
+
+        domHelper.updateNoteStatistics(noteService);
     }
 
     window.createNote = () => {
-        
+
         const newNote = domHelper.getCreateNodeInfo();
 
         newNote.created = DateHelper.formatCreatedDate(new Date(Date.now()));
         newNote.id = crypto.randomUUID();
 
         noteService.addNote(newNote);
-        
+
         domHelper.addNote(newNote);
-        
+
         domHelper.closePopup(popups.popupCreate);
-        domHelper.updateNoteStatistics(noteService.notes, noteService.archivedNotes);
+        domHelper.updateNoteStatistics(noteService);
+    }
+
+    window.removeAll = () => {
+
+        noteService.notes.forEach(note => {
+
+            noteService.removeNote(note.id);
+            
+            domHelper.removeNoteElementById(note.id);
+        });
+
+        domHelper.updateNoteStatistics(noteService);
+
+    }
+
+    window.archiveAll = () => {
+        
+        noteService.notes.forEach(note => {
+
+            noteService.archiveNote(note.id);
+            
+            domHelper.removeNoteElementById(note.id);
+        });
+
+        domHelper.updateNoteStatistics(noteService);
     }
 }

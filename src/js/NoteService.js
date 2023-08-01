@@ -6,24 +6,24 @@ export class NoteService {
                 name: "Shopping List",
                 created: "April 27, 2021",
                 category: "Task",
-                content: "Tomatoes, Bread",
-                dates: ['3/5/2021', '5/5/2021'],
+                content: "Tomatoes, Bread 3/5/2021 5/5/2021 5/5/5000",
+                dates: ["3/5/2021", "5/5/2021"],
                 id: "0000"
             },
             {
                 name: "Personal Notes",
                 created: "July 15, 2021",
                 category: "Random Thought",
-                content: "Meeting at 3 PM",
-                dates: ['7/16/2021', '7/18/2021'],
+                content: "Meeting at 3 PM 7/16/2021",
+                dates: ['7/16/2021'],
                 id: "1111"
             },
             {
                 name: "Shopping List",
                 created: "August 5, 2021",
                 category: "Random Thought",
-                content: "Submit report, Prepare presentation",
-                dates: ['8/6/2021', '8/8/2021'],
+                content: "Submit report, Prepare presentation for 8/8/2021",
+                dates: ['8/8/2021'],
                 id: "2222"
             }
         ]
@@ -55,7 +55,7 @@ export class NoteService {
     }
 
     removeNote(noteId) {
-        console.log(this.notes);
+
         if (!this.notes.find(note => note.id === noteId)) {
 
             return {

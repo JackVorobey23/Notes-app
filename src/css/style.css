@@ -44,7 +44,6 @@ svg {
     color: white;
 }
 
-#notes tr:nth-child(n + 2):hover,
 #archived-notes tr:nth-child(n + 2):hover {
     background-color: #79cfaf;
     cursor: pointer;

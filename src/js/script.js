@@ -16,6 +16,4 @@ noteService.notes.forEach(note => {
 configureWindowEvents(noteService, domHelper);
 
 
-domHelper.updateNoteStatistics(noteService.notes, noteService.archivedNotes);
-
-console.log(noteService.notes);
+domHelper.updateNoteStatistics(noteService);

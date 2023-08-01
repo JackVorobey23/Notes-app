@@ -8,8 +8,6 @@ export class DOMHelper {
 
         if (!Object.values(popups).includes(popup)) {
 
-            console.log('wrong popup string');
-
             return;
         }
 
@@ -21,8 +19,6 @@ export class DOMHelper {
     closePopup(popup) {
 
         if (!Object.values(popups).includes(popup)) {
-
-            console.log('wrong popup string');
 
             return;
         }
@@ -54,7 +50,6 @@ export class DOMHelper {
     removeNoteElementById(noteId) {
 
         const elementToRemove = document.getElementById(`${noteId}`).parentElement;
-        console.log(elementToRemove);
 
         elementToRemove.remove();
     }
@@ -62,7 +57,6 @@ export class DOMHelper {
     removeArchivedNoteElementById(noteId) {
 
         const elementToRemove = document.getElementById(`${noteId}`);
-        console.log(elementToRemove);
 
         elementToRemove.remove();
     }
@@ -71,9 +65,28 @@ export class DOMHelper {
         const notesElement = document.getElementById('notes');
         const newNoteElement = document.createElement('tr');
 
+        let iconClass = '';
+
+        switch (note.category) {
+            
+            case 'Task':
+                iconClass = 'fa-solid fa-list-check';
+                break;
+
+            case 'Random Thought':
+                iconClass = 'fa-solid fa-brain';
+                break;
+
+            case 'Idea':
+                iconClass = 'fa-regular fa-lightbulb';
+                break;
+            default:
+                break;
+        }
+
         newNoteElement.innerHTML = `
             <td class="note-name">
-                <i class="fa-solid fa-clipboard-check"></i>
+                <i class="${iconClass}"></i>
                 ${note.name}
             </td>
             <td class="note-created">${note.created}</td>
@@ -106,8 +119,8 @@ export class DOMHelper {
         noteElementToUpdate.querySelector('.note-dates').innerHTML = note.dates;
     }
 
-    updateNoteStatistics(notes, archivedNotes) {
-
+    updateNoteStatistics(noteService) {
+        
         const archivedNotesElement = document.getElementById('archived-notes');
         //removing all current note statistics
         archivedNotesElement
@@ -116,7 +129,7 @@ export class DOMHelper {
 
                 element.remove();
             });
-        console.log(notes, archivedNotes);
+            
         Object.values(noteCategories).forEach(noteCategory => {
 
             const tableRowElement = document.createElement('tr');
@@ -127,12 +140,16 @@ export class DOMHelper {
 
             tableRowElement.onclick = () => {
 
-                new DOMHelper().fillArchivedPopup(noteCategory, archivedNotes);
+                new DOMHelper().fillArchivedPopup(noteCategory, noteService);
             }
 
             noteCategoryElement.innerText = noteCategory;
-            noteActiveElement.innerText = notes.filter(note => note.category === noteCategory).length;
-            noteArchivedElement.innerText = archivedNotes.filter(note => note.category === noteCategory).length;
+            
+            noteActiveElement.innerText = noteService.notes
+                .filter(note => note.category === noteCategory).length;
+            
+            noteArchivedElement.innerText = noteService.archivedNotes
+                .filter(note => note.category === noteCategory).length;
 
             tableRowElement.append(noteCategoryElement, noteActiveElement, noteArchivedElement);
 
@@ -140,7 +157,7 @@ export class DOMHelper {
         })
     }
 
-    fillArchivedPopup(category, archivedNotes) {
+    fillArchivedPopup(category, noteService) {
 
         document.getElementById('archived-notes-title').innerText = `Archived notes (Category - ${category})`;
 
@@ -153,7 +170,7 @@ export class DOMHelper {
                 element.remove();
             });
 
-        archivedNotes = archivedNotes
+        const archivedNotes = noteService.archivedNotes
             .filter(archivedNote => archivedNote.category === category);
 
         if (archivedNotes.length > 0) {
@@ -171,6 +188,24 @@ export class DOMHelper {
                 archNoteElement.id = archivedNote.id;
                 archivedNoteTableElement.children.item(0).appendChild(archNoteElement);
             })
+        }
+
+        document.getElementById('unarchive-all-btn').onclick = () => {
+            
+            const localDomHelper = new DOMHelper();
+            
+            noteService.archivedNotes
+                .filter(archiveNote => archiveNote.category === category)
+                .forEach(note => {
+                    
+                    noteService.unarchiveNote(note.id);
+                    
+                    localDomHelper.removeArchivedNoteElementById(note.id);
+                    localDomHelper.addNote(note);
+                });
+            localDomHelper.updateNoteStatistics(noteService);
+
+            localDomHelper.closePopup(popups.popupArchived);
         }
 
         this.showPopup(popups.popupArchived);

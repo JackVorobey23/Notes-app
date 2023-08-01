@@ -30,8 +30,8 @@
         <th>Content</th>
         <th>Dates</th>
         <th>
-          <i class="fa-solid fa-box-archive"></i>
-          <i class="fa-solid fa-trash-can"></i>
+          <i class="fa-solid fa-box-archive" onclick="archiveAll()"></i>
+          <i class="fa-solid fa-trash-can" onclick="removeAll()"></i>
         </th>
       </tr>
       <!-- <tr>
@@ -164,19 +164,14 @@
       </div>
     </div>
 
-    <div class="popup-body popup-archived">
+    <div class="popup-body popup-archived p-2">
       <p class="fw-bolder" id="archived-notes-title">Archived notes (Category - [])</p>
   
       <table id="archived-table">
         <tr id="4444">
           <th>Name</th>
           <th>Content</th>
-          <th onclick="unarchive(this)"><i class="fa-solid fa-arrow-up-from-bracket"></i></th>
-        </tr>
-        <tr>
-          <td>Name</td>
-          <td>Content</td>
-          <td><i class="fa-solid fa-arrow-up-from-bracket"></i></td>
+          <th><i class="fa-solid fa-arrow-up-from-bracket" id="unarchive-all-btn"></i></th>
         </tr>
       </table>
   

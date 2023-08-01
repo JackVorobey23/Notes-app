@@ -100,9 +100,32 @@
 
     <div class="popup-body popup-edit">
       <p class="fw-bolder">Note Edit</p>
-
+      <table class="create-note-table">
+        <tbody>
+          <tr>
+            <td>Name:</td>
+            <td><input type="text" id="edit-note-name"></td>
+          </tr>
+          <tr>
+            <td>Category:</td>
+            <td>
+              <select id="edit-note-category">
+                <option value="Task" selected>Task</option>
+                <option value="Random Thought">Random Thought</option>
+                <option value="Idea">Idea</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Content:</td>
+            <td>
+              <textarea id="edit-note-content"></textarea>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <div class="d-flex justify-content-evenly">
-        <button class="btn btn-danger">Save</button>
+        <button class="btn btn-danger" onclick="updateNote()">Save</button>
         <button class="btn btn-secondary" onclick="closePopups()">Cancel</button>
       </div>
     </div>
@@ -140,6 +163,28 @@
         <button class="btn btn-secondary" onclick="closePopups()">Cancel</button>
       </div>
     </div>
+
+    <div class="popup-body popup-archived">
+      <p class="fw-bolder" id="archived-notes-title">Archived notes (Category - [])</p>
+  
+      <table id="archived-table">
+        <tr id="4444">
+          <th>Name</th>
+          <th>Content</th>
+          <th onclick="unarchive(this)"><i class="fa-solid fa-arrow-up-from-bracket"></i></th>
+        </tr>
+        <tr>
+          <td>Name</td>
+          <td>Content</td>
+          <td><i class="fa-solid fa-arrow-up-from-bracket"></i></td>
+        </tr>
+      </table>
+  
+      <div class="d-flex justify-content-evenly">
+        <button class="btn btn-secondary m-4" onclick="closePopups()">Close</button>
+      </div>
+    </div>
+
   </div>
 </body>
 

@@ -9,7 +9,7 @@ export class NoteService {
                 content: "Tomatoes, Bread",
                 dates: ['3/5/2021', '5/5/2021'],
                 id: "0000"
-            }, 
+            },
             {
                 name: "Personal Notes",
                 created: "July 15, 2021",
@@ -17,7 +17,7 @@ export class NoteService {
                 content: "Meeting at 3 PM",
                 dates: ['7/16/2021', '7/18/2021'],
                 id: "1111"
-            }, 
+            },
             {
                 name: "Shopping List",
                 created: "August 5, 2021",
@@ -35,72 +35,98 @@ export class NoteService {
         this.notes.push(note);
     }
 
+    updateNote(note) {
+
+        const noteToUpdate = this.notes.find(_note => _note.id === note.id);
+
+        if (!noteToUpdate) {
+            return {
+                success: false,
+                errorMsg: `note with id=${note.id} doesn't exist`
+            }
+        }
+        Object.keys(note).forEach(newNoteKey => {
+            noteToUpdate[newNoteKey] = note[newNoteKey];
+        })
+        return {
+            success: true,
+            errorMsg: null
+        }
+    }
+
     removeNote(noteId) {
         console.log(this.notes);
         if (!this.notes.find(note => note.id === noteId)) {
-            
+
             return {
                 success: false,
-                error: `note with id=${noteId} doesn't exist`
+                errorMsg: `note with id=${noteId} doesn't exist`
             }
         }
         else {
-            
+
             this.notes = this.notes.filter(note => note.id !== noteId);
-            
+
             return {
                 success: true,
-                error: null
+                errorMsg: null
             }
         }
     }
 
     archiveNote(noteId) {
-        
+
         const noteToArchive = this.notes.find(note => note.id === noteId);
-        
+
         if (!noteToArchive) {
-            
+
             return {
                 success: false,
-                error: `note with id=${noteId} doesn't exist`
+                errorMsg: `note with id=${noteId} doesn't exist`
             }
         }
         else {
-            
+
             this.notes = this.notes.filter(note => note.id !== noteId);
-            
+
             this.archivedNotes.push(noteToArchive);
-            
+
             return {
                 success: true,
-                error: null
+                errorMsg: null
             }
         }
     }
 
-    getNotes() {
-        return this.notes;
+    unarchiveNote(noteId) {
+        const noteToUnarchive = this.archivedNotes.find(note => note.id === noteId);
+
+        if (!noteToUnarchive) {
+
+            return {
+                success: false,
+                errorMsg: `archived note with id=${noteId} doesn't exist`
+            }
+        }
+        else {
+
+            this.archivedNotes = this.archivedNotes.filter(note => note.id !== noteId);
+
+            this.notes.push(noteToUnarchive);
+
+            return {
+                success: true,
+                errorMsg: null
+            }
+        }
+    }
+
+    getNoteById(noteId) {
+        return this.notes.find(note => note.id === noteId)
     }
 
     getArchivedNotes() {
         return this.archivedNotes;
-    }
-
-    formatCreatedDate(dateString) {
-
-        const options = { month: 'long', day: 'numeric', year: 'numeric' };
-
-        return new Date(dateString).toLocaleString('en-US', options);
-    }
-
-    formatDate(dateString) {
-
-        const date = new Date(dateString);
-
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-
-        return new Intl.DateTimeFormat('en-GB', options).format(date);
     }
 }
 

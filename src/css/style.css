@@ -16,9 +16,12 @@ svg {
 }
 
 #notes td,
-#archived-notes td,
 #notes th,
-#archived-notes th {
+#archived-notes td,
+#archived-notes th,
+#archived-table th,
+#archived-table td
+ {
     border: 1px solid #ddd;
     padding: 8px;
     max-width: 0;
@@ -27,10 +30,13 @@ svg {
     white-space: nowrap;
 }
 
-
+#archived-table {
+    width: 100%;
+}
 
 #notes th,
-#archived-notes th {
+#archived-notes th,
+#archived-table th {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
@@ -78,7 +84,7 @@ svg {
     border-radius: 10px;
 }
 
-.popup-create {
+.popup-create, .popup-edit{
     margin: 3% auto;
     width: 50%;
     min-width: 500px;
@@ -91,8 +97,13 @@ svg {
 .popup .popup-remove,
 .popup .popup-archive,
 .popup .popup-edit,
-.popup .popup-create {
+.popup .popup-create,
+.popup .popup-archived {
     display: none;
+}
+.popup-archived {
+    width: 40%;
+    min-width: 400px;
 }
 
 .create-note-table {

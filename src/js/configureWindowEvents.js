@@ -1,8 +1,8 @@
 import { DOMHelper, popups } from "./DOMHelper.js";
-
+import DateHelper from "./DateHelper.js";
 
 export default function configureWindowEvents(noteService, domHelper) {
-        
+
     window.setRemoveNote = (htmlElement) => {
 
         window.localStorage.setItem('removeNoteId', htmlElement.parentElement.id);
@@ -17,14 +17,36 @@ export default function configureWindowEvents(noteService, domHelper) {
         domHelper.showPopup(popups.popupArchive);
     }
 
+    window.setEditNote = (htmlElement) => {
+
+        const noteToEdit = noteService.getNoteById(htmlElement.parentElement.id);
+        window.localStorage.setItem('editNoteId', noteToEdit.id);
+
+        domHelper.fillEditNoteInfo(noteToEdit);
+        domHelper.showPopup(popups.popupEdit);
+    }
+
     window.openCreatePopup = () => {
 
         domHelper.showPopup(popups.popupCreate);
     }
 
+    window.unarchive = (trElement) => {
+        console.log(trElement);
+        console.log(trElement.parentElement);
+        console.log(trElement.parentElement.id);
+        const unarchiveNoteId = trElement.parentElement.id;
+
+        noteService.unarchiveNote(unarchiveNoteId);
+        domHelper.removeArchivedNoteElementById(unarchiveNoteId);
+
+        domHelper.updateNoteStatistics(noteService.notes, noteService.archivedNotes);
+        domHelper.addNote(noteService.getNoteById(unarchiveNoteId));
+    }
+
     window.closePopups = () => {
         Object.values(popups).forEach(popup => {
-            domHelper.hidePopup(popup);
+            domHelper.closePopup(popup);
         });
     }
 
@@ -33,11 +55,11 @@ export default function configureWindowEvents(noteService, domHelper) {
         const noteIdToRemove = window.localStorage.getItem('removeNoteId');
 
         const removeResult = noteService.removeNote(noteIdToRemove);
-        
-        domHelper.hidePopup(popups.popupRemove);
-        
+
+        domHelper.closePopup(popups.popupRemove);
+
         if (!removeResult.success) {
-            console.log(removeResult.error);
+            console.log(removeResult.errorMsg);
         }
         else {
             domHelper.removeNoteElementById(noteIdToRemove);
@@ -51,7 +73,7 @@ export default function configureWindowEvents(noteService, domHelper) {
 
         const archiveResult = noteService.archiveNote(noteIdToArchive);
 
-        domHelper.hidePopup(popups.popupArchive);
+        domHelper.closePopup(popups.popupArchive);
 
         if (archiveResult.success) {
 
@@ -61,42 +83,40 @@ export default function configureWindowEvents(noteService, domHelper) {
             domHelper.updateNoteStatistics(noteService.notes, noteService.archivedNotes)
         }
         else {
-            console.log(archiveResult.error);
+            console.log(archiveResult.errorMsg);
         }
+    }
+
+    window.updateNote = () => {
+
+        const newNote = domHelper.getEditNoteInfo();
+        const updateResult = noteService.updateNote(newNote);
+
+        if (!updateResult.success) {
+            console.log(updateResult.errorMsg);
+            return;
+        }
+        window.localStorage.setItem('editNoteId', '');
+        
+        domHelper.updateNote(noteService.getNoteById(newNote.id));
+        
+        domHelper.closePopup(popups.popupEdit);
+        
+        domHelper.updateNoteStatistics(noteService.notes, noteService.archivedNotes);
     }
 
     window.createNote = () => {
         
-        const noteName = document.getElementById('create-note-name').value;
+        const newNote = domHelper.getCreateNodeInfo();
 
-        const noteCategory = document.getElementById('create-note-category').value;
+        newNote.created = DateHelper.formatCreatedDate(new Date(Date.now()));
+        newNote.id = crypto.randomUUID();
 
-        const content = document.getElementById('create-note-content').value;
-
-        const dateRegex = /\b\d{1,2}\/\d{1,2}\/\d{4}\b/g;
-
-        const dates = content
-            .match(dateRegex)
-            ?.filter(stringDate => {
-                console.log(stringDate);
-                const date = new Date(stringDate);
-                console.log(date);
-
-                return (date > new Date('01.01.1800') && date < new Date('01.01.2200'));
-            });
-
-        const newNote = {
-            name: noteName,
-            created: noteService.formatCreatedDate(new Date(Date.now())),
-            category: noteCategory,
-            content: content,
-            dates: dates ? dates : '',
-            id: crypto.randomUUID()
-        }
-        domHelper.addNote(newNote);
         noteService.addNote(newNote);
         
-        domHelper.hidePopup(popups.popupCreate);
+        domHelper.addNote(newNote);
+        
+        domHelper.closePopup(popups.popupCreate);
         domHelper.updateNoteStatistics(noteService.notes, noteService.archivedNotes);
     }
 }

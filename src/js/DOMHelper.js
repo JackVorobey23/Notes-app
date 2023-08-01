@@ -36,12 +36,14 @@ export class DOMHelper {
     }
 
     clearEditPopup() {
+        
         document.getElementById('edit-note-name').value = '';
         document.getElementById('edit-note-category').value = '';
         document.getElementById('edit-note-content').value = '';
     }
 
     clearCreatePopup() {
+        
         document.getElementById('create-note-name').value = '';
         document.getElementById('create-note-category').value = '';
         document.getElementById('create-note-content').value = '';
@@ -62,6 +64,7 @@ export class DOMHelper {
     }
 
     addNote(note) {
+        
         const notesElement = document.getElementById('notes');
         const newNoteElement = document.createElement('tr');
 

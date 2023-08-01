@@ -1,2 +1,128 @@
 @import url('reset.css');
 
+body {
+    padding: 2%;
+}
+
+svg {
+    width: 20px;
+    height: auto;
+    cursor: pointer;
+}
+
+#notes,
+#archived-notes {
+    width: 100%;
+}
+
+#notes td,
+#notes th,
+#archived-notes td,
+#archived-notes th,
+#archived-table th,
+#archived-table td
+ {
+    border: 1px solid #ddd;
+    padding: 8px;
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#archived-table {
+    width: 100%;
+}
+
+#notes th,
+#archived-notes th,
+#archived-table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #04AA6D;
+    color: white;
+}
+
+#archived-notes tr:nth-child(n + 2):hover {
+    background-color: #79cfaf;
+    cursor: pointer;
+}
+
+#notes tr:hover,
+#archived-notes tr:hover,
+#notes tr,
+#archived-notes tr {
+    transition: .2s;
+}
+
+.popup {
+    top: 0;
+    left: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: #ddddddcc;
+}
+
+.popup button {
+    margin-top: 10%;
+    margin-bottom: 3%;
+}
+
+.popup p {
+    padding: 4%;
+}
+
+.popup-body {
+    width: 30%;
+    min-width: 200px;
+    height: auto;
+    margin: 20% auto;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.popup-create, .popup-edit{
+    margin: 3% auto;
+    width: 50%;
+    min-width: 500px;
+}
+
+.popup {
+    display: none;
+}
+
+.popup .popup-remove,
+.popup .popup-archive,
+.popup .popup-edit,
+.popup .popup-create,
+.popup .popup-archived {
+    display: none;
+}
+.popup-archived {
+    width: 40%;
+    min-width: 400px;
+}
+
+.create-note-table {
+    width: 100%;
+    margin: 2% 0;
+    column-gap: 20px;
+}
+
+.create-note-table td {
+    box-sizing: border-box;
+    padding: 3%;
+    vertical-align: top;
+}
+
+.create-note-table input,
+.create-note-table textarea {
+    width: 90%;
+}
+
+.create-note-table select {
+    width: 50%;
+    height: 40px;
+}
